@@ -3,8 +3,12 @@ import * as Components from "../SignIn/Component.jsx"
 import { Icon } from 'react-icons-kit';
 import { eyeOff } from 'react-icons-kit/feather/eyeOff';
 import { eye } from 'react-icons-kit/feather/eye';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../AuthContext.jsx';
 
 function Doctor() {
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const [signIn, toggle] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [registrationData, setRegistrationData] = useState({
@@ -39,7 +43,7 @@ function Doctor() {
 
     const handleRegistrationSubmit = async (e) => {
         e.preventDefault();
-        console.log(JSON.stringify(registrationData))
+        //console.log(JSON.stringify(registrationData))
         if (registrationData.password !== registrationData.confirmPassword) {
             alert("Passwords do not match");
             return;
@@ -57,7 +61,10 @@ function Doctor() {
             if (response.ok) {
                 // handle successful response
                 alert("Registration successful");
-                window.location.href = '/doctor/dashboard';
+                const result = await response.json();
+                //console.log('result',result)
+                login(result.doctorData); // Assuming the backend returns the user data
+                navigate('/doctor/dashboard');
             } else {
                 // handle error response
                 const result = await response.json();
@@ -72,7 +79,7 @@ function Doctor() {
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
-        console.log(JSON.stringify(loginData))
+        //console.log(JSON.stringify(loginData))
         try {
             const response = await fetch('/login/doctor', {
                 method: 'POST',
@@ -85,7 +92,10 @@ function Doctor() {
             if (response.ok) {
                 // handle successful response
                 alert("Login successful");
-                window.location.href = '/doctor/dashboard';
+                const result = await response.json();
+                //console.log('result',result)
+                login(result.doctorData); // Assuming the backend returns the user data
+                navigate('/doctor/dashboard');
             } else {
                 // handle error response
                 alert("Login failed");

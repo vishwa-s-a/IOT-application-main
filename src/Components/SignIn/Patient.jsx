@@ -3,8 +3,12 @@ import * as Components from "../SignIn/Comp_pat";
 import { Icon } from 'react-icons-kit';
 import { eyeOff } from 'react-icons-kit/feather/eyeOff';
 import { eye } from 'react-icons-kit/feather/eye';
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../AuthContext.jsx';
 
 function Patient() {
+    const { login } = useAuth();
+    const navigate = useNavigate();
     const [signIn, toggle] = useState(true);
     const [showPassword, setShowPassword] = useState(false);
     const [selectedOption, setSelectedOption] = useState('');
@@ -40,7 +44,7 @@ function Patient() {
             alert("Passwords do not match");
             return;
         }
-        console.log(JSON.stringify(registrationData))
+        //console.log(JSON.stringify(registrationData))
         try {
             const response = await fetch('/register/user', {
                 method: 'POST',
@@ -53,7 +57,10 @@ function Patient() {
             if (response.ok) {
                 // handle successful response
                 alert("Registration successful");
-                window.location.href = '/user/dashboard';
+                const result = await response.json();
+                //console.log('result',result)
+                login(result.userData); // Assuming the backend returns the user data
+                navigate('/patient/dashboard');
             } else {
                 // handle error response
                 const result = await response.json();
@@ -68,7 +75,7 @@ function Patient() {
 
     const handleLoginSubmit = async (e) => {
         e.preventDefault();
-        console.log(JSON.stringify(loginData))
+        //console.log(JSON.stringify(loginData))
         try {
             const response = await fetch('/login/user', {
                 method: 'POST',
@@ -81,7 +88,10 @@ function Patient() {
             if (response.ok) {
                 // handle successful response
                 alert("Login successful");
-                window.location.href = '/user/dashboard';
+                const result = await response.json();
+                //console.log('result',result)
+                login(result.userData); // Assuming the backend returns the user data
+                navigate('/patient/dashboard');
             } else {
                 // handle error response
                 alert("Login failed");
