@@ -9,10 +9,11 @@ const PatientDashboard = () => {
         const fetchPatientData = async () => {
             try {
                 //console.log('user-data from dashboard',user)
-                const response = await fetch(`/api/patient/${user.username}`, {
+                const response = await fetch(`/api/patient`, {
                     headers: {
                         'Content-Type': 'application/json',
                     },
+                    credentials: 'include' // Include cookies in the request
                 });
 
                 if (response.ok) {
